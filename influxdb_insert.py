@@ -4,13 +4,15 @@ import psutil
 from influxdb import InfluxDBClient
 
 total_run_seconds = 30 * 60
+default_host_name = "freypc"
+default_region = "shanghai"
 
 json_body = [
     {
         "measurement": "cpu_load_per_sec",
         "tags": {
-            "host": "freypc",
-            "region": "shanghai"
+            "host": default_host_name,
+            "region": default_region
         },
         "time": "",
         "fields": {
@@ -32,9 +34,9 @@ class InfluxInserter(object):
                 utc_dt = datetime.datetime.utcfromtimestamp(time.time())
                 json_body[0]["fields"]["value"] = usage
                 json_body[0]["time"] = str(utc_dt)
+                print json_body
                 self.db_client.write_points(json_body)
                 time.sleep(1)
-                print json_body
             except Exception as e:
                 raise e
 
